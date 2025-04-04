@@ -1,0 +1,14 @@
+# Ignore class files
+*.class
+
+# Ignore compiled JAR files
+*.jar
+
+# Ignore IDE-specific files (e.g., VSCode, Eclipse, IntelliJ)
+.vscode/
+.idea/
+*.iml
+
+# Ignore logs and temporary files
+*.log
+*.tmp
