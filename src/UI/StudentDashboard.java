@@ -115,106 +115,322 @@
 //         }
 //     }
 // }
+// package UI;
+
+// import javax.swing.*;
+// import java.awt.*;
+// import java.awt.event.ActionEvent;
+// import java.awt.event.ActionListener;
+// import java.sql.*;
+// import Database.DatabaseConnection;
+
+// public class StudentDashboard extends JFrame {
+
+//     private String studentUsername;
+//     private JLabel welcomeLabel;
+//     private JTextArea marksTextArea;
+//     private JButton logoutButton;
+
+//     public StudentDashboard(String studentUsername) {
+//         this.studentUsername = studentUsername;
+
+//         setTitle("Student Dashboard");
+//         setSize(600, 500);
+//         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//         setLayout(new BorderLayout());
+
+//         JPanel topPanel = new JPanel(new FlowLayout());
+//         welcomeLabel = new JLabel("Welcome, " + studentUsername);
+//         topPanel.add(welcomeLabel);
+
+//         marksTextArea = new JTextArea(20, 50);
+//         marksTextArea.setEditable(false);
+//         JScrollPane scrollPane = new JScrollPane(marksTextArea);
+
+//         JPanel buttonPanel = new JPanel(new FlowLayout());
+//         logoutButton = new JButton("Logout");
+
+//         buttonPanel.add(logoutButton);
+
+//         add(topPanel, BorderLayout.NORTH);
+//         add(scrollPane, BorderLayout.CENTER);
+//         add(buttonPanel, BorderLayout.SOUTH);
+
+//         loadMarks();
+
+//         logoutButton.addActionListener(new ActionListener() {
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
+//                 dispose();
+//                 InitialPage initialPage = new InitialPage();
+//                 initialPage.setVisible(true);
+//             }
+//         });
+//     }
+
+//     private void loadMarks() {
+//         try (Connection connection = DatabaseConnection.getConnection()) {
+//             String query = "SELECT s.SubjectName, m.MSE1, m.MSE2, m.Task, m.SEE, m.CIE, m.SEE_50, m.Total, m.Grade " +
+//                            "FROM Marks m " +
+//                            "JOIN Subjects s ON m.SubjectID = s.SubjectID " +
+//                            "JOIN Students st ON m.USN = st.USN " +
+//                            "JOIN Users u ON st.UserID = u.UserID " +
+//                            "WHERE u.Username = ?";
+            
+//             PreparedStatement pstmt = connection.prepareStatement(query);
+//             pstmt.setString(1, studentUsername);
+//             ResultSet rs = pstmt.executeQuery();
+
+//             StringBuilder marksList = new StringBuilder();
+//             marksList.append("Subject\tMSE1\tMSE2\tTask\tSEE\tCIE\tSEE_50\tTotal\tGrade\n");
+//             marksList.append("---------------------------------------------------------------------\n");
+
+//             while (rs.next()) {
+//                 String subjectName = rs.getString("SubjectName");
+//                 int mse1 = rs.getInt("MSE1");
+//                 int mse2 = rs.getInt("MSE2");
+//                 int task = rs.getInt("Task");
+//                 int see = rs.getInt("SEE");
+//                 int cie = rs.getInt("CIE");
+//                 int see_50 = rs.getInt("SEE_50");
+//                 int total = rs.getInt("Total");
+//                 String grade = rs.getString("Grade");
+
+//                 marksList.append(String.format("%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%s\n",
+//                         subjectName, mse1, mse2, task, see, cie, see_50, total, grade));
+//             }
+
+//             if (marksList.length() == 0) {
+//                 marksTextArea.setText("No marks found for this student.");
+//             } else {
+//                 marksTextArea.setText(marksList.toString());
+//             }
+
+//         } catch (SQLException e) {
+//             e.printStackTrace();
+//         }
+//     }
+
+//     public static void main(String[] args) {
+//         SwingUtilities.invokeLater(() -> {
+//             StudentDashboard studentDashboard = new StudentDashboard("student1"); // Test with valid username
+//             studentDashboard.setVisible(true);
+//         });
+//     }
+// }
+
+
+// package UI;
+
+// import Database.DatabaseConnection;
+
+// import javax.swing.*;
+// import javax.swing.table.DefaultTableCellRenderer;
+// import javax.swing.table.DefaultTableModel;
+// import java.awt.*;
+// import java.sql.Connection;
+// import java.sql.PreparedStatement;
+// import java.sql.ResultSet;
+// import java.sql.SQLException;
+
+// public class StudentDashboard extends JFrame {
+//     private JTable marksTable;
+//     private DefaultTableModel tableModel;
+//     private Connection connection;
+//     private String studentUSN;
+
+//     public StudentDashboard(String studentUSN) {
+//         this.studentUSN = studentUSN;
+//         connection = DatabaseConnection.getConnection();
+
+//         // Frame settings
+//         setTitle("Student Dashboard - USN: " + studentUSN);
+//         setSize(800, 500);
+//         setDefaultCloseOperation(EXIT_ON_CLOSE);
+//         setLocationRelativeTo(null);
+
+//         // Table setup
+//         String[] columnNames = {"Subject", "MSE1", "MSE2", "Task", "SEE", "CIE", "SEE_50", "Total", "Grade"};
+//         tableModel = new DefaultTableModel(columnNames, 0);
+//         marksTable = new JTable(tableModel);
+//         marksTable.setFillsViewportHeight(true);
+
+//         // Column alignment
+//         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+//         renderer.setHorizontalAlignment(SwingConstants.CENTER);
+//         for (int i = 0; i < marksTable.getColumnCount(); i++) {
+//             marksTable.getColumnModel().getColumn(i).setCellRenderer(renderer);
+//         }
+
+//         // Column width adjustment
+//         marksTable.getColumnModel().getColumn(0).setPreferredWidth(150); // Subject column
+//         marksTable.getColumnModel().getColumn(1).setPreferredWidth(50); // MSE1 column
+//         marksTable.getColumnModel().getColumn(2).setPreferredWidth(50); // MSE2 column
+//         marksTable.getColumnModel().getColumn(3).setPreferredWidth(50); // Task column
+//         marksTable.getColumnModel().getColumn(4).setPreferredWidth(50); // SEE column
+//         marksTable.getColumnModel().getColumn(5).setPreferredWidth(50); // CIE column
+//         marksTable.getColumnModel().getColumn(6).setPreferredWidth(50); // SEE_50 column
+//         marksTable.getColumnModel().getColumn(7).setPreferredWidth(50); // Total column
+//         marksTable.getColumnModel().getColumn(8).setPreferredWidth(50); // Grade column
+
+//         // Load student marks
+//         loadMarks();
+
+//         // Add table to a scroll pane
+//         JScrollPane scrollPane = new JScrollPane(marksTable);
+
+//         // Layout settings
+//         JPanel panel = new JPanel(new BorderLayout(10, 10));
+//         JLabel titleLabel = new JLabel("Student Marks", JLabel.CENTER);
+//         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+//         panel.add(titleLabel, BorderLayout.NORTH);
+//         panel.add(scrollPane, BorderLayout.CENTER);
+
+//         add(panel);
+
+//         setVisible(true);
+//     }
+
+//     private void loadMarks() {
+//         try {
+//             String query = "SELECT s.SubjectName, m.MSE1, m.MSE2, m.Task, m.SEE, m.CIE, m.SEE_50, m.Total, m.Grade " +
+//                            "FROM Marks m " +
+//                            "JOIN Subjects s ON m.SubjectID = s.SubjectID " +
+//                            "WHERE m.USN = ?";
+//             PreparedStatement pstmt = connection.prepareStatement(query);
+//             pstmt.setString(1, studentUSN);
+
+//             ResultSet rs = pstmt.executeQuery();
+
+//             while (rs.next()) {
+//                 tableModel.addRow(new Object[]{
+//                     rs.getString("SubjectName"),
+//                     rs.getInt("MSE1"),
+//                     rs.getInt("MSE2"),
+//                     rs.getInt("Task"),
+//                     rs.getInt("SEE"),
+//                     rs.getInt("CIE"),
+//                     rs.getInt("SEE_50"),
+//                     rs.getInt("Total"),
+//                     rs.getString("Grade")
+//                 });
+//             }
+//         } catch (SQLException e) {
+//             JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//             e.printStackTrace();
+//         }
+//     }
+// }
+
+
 package UI;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.*;
 import Database.DatabaseConnection;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class StudentDashboard extends JFrame {
+    private JTable marksTable;
+    private DefaultTableModel tableModel;
+    private Connection connection;
+    private String studentUSN;
 
-    private String studentUsername;
-    private JLabel welcomeLabel;
-    private JTextArea marksTextArea;
-    private JButton logoutButton;
+    public StudentDashboard(String studentUSN) {
+        this.studentUSN = studentUSN;
+        connection = DatabaseConnection.getConnection();
 
-    public StudentDashboard(String studentUsername) {
-        this.studentUsername = studentUsername;
+        // Frame settings
+        setTitle("Student Dashboard - USN: " + studentUSN);
+        setSize(800, 600);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
 
-        setTitle("Student Dashboard");
-        setSize(600, 500);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        // Table setup
+        String[] columnNames = {"Subject", "MSE1", "MSE2", "Task", "SEE", "CIE", "SEE_50", "Total", "Grade"};
+        tableModel = new DefaultTableModel(columnNames, 0);
+        marksTable = new JTable(tableModel);
+        marksTable.setFillsViewportHeight(true);
 
-        JPanel topPanel = new JPanel(new FlowLayout());
-        welcomeLabel = new JLabel("Welcome, " + studentUsername);
-        topPanel.add(welcomeLabel);
+        // Column alignment
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.CENTER);
+        for (int i = 0; i < marksTable.getColumnCount(); i++) {
+            marksTable.getColumnModel().getColumn(i).setCellRenderer(renderer);
+        }
 
-        marksTextArea = new JTextArea(20, 50);
-        marksTextArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(marksTextArea);
+        // Column width adjustment
+        marksTable.getColumnModel().getColumn(0).setPreferredWidth(150); // Subject column
+        marksTable.getColumnModel().getColumn(1).setPreferredWidth(50); // MSE1 column
+        marksTable.getColumnModel().getColumn(2).setPreferredWidth(50); // MSE2 column
+        marksTable.getColumnModel().getColumn(3).setPreferredWidth(50); // Task column
+        marksTable.getColumnModel().getColumn(4).setPreferredWidth(50); // SEE column
+        marksTable.getColumnModel().getColumn(5).setPreferredWidth(50); // CIE column
+        marksTable.getColumnModel().getColumn(6).setPreferredWidth(50); // SEE_50 column
+        marksTable.getColumnModel().getColumn(7).setPreferredWidth(50); // Total column
+        marksTable.getColumnModel().getColumn(8).setPreferredWidth(50); // Grade column
 
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        logoutButton = new JButton("Logout");
-
-        buttonPanel.add(logoutButton);
-
-        add(topPanel, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
-
+        // Load student marks
         loadMarks();
 
-        logoutButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                InitialPage initialPage = new InitialPage();
-                initialPage.setVisible(true);
-            }
+        // Add table to a scroll pane
+        JScrollPane scrollPane = new JScrollPane(marksTable);
+
+        // Layout settings
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        JLabel titleLabel = new JLabel("Student Marks", JLabel.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        panel.add(titleLabel, BorderLayout.NORTH);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        // Add back button
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> {
+            new InitialPage().setVisible(true); // Redirect to InitialPage or previous menu
+            dispose();
         });
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(backButton);
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        add(panel);
+
+        setVisible(true);
     }
 
     private void loadMarks() {
-        try (Connection connection = DatabaseConnection.getConnection()) {
+        try {
             String query = "SELECT s.SubjectName, m.MSE1, m.MSE2, m.Task, m.SEE, m.CIE, m.SEE_50, m.Total, m.Grade " +
                            "FROM Marks m " +
                            "JOIN Subjects s ON m.SubjectID = s.SubjectID " +
-                           "JOIN Students st ON m.USN = st.USN " +
-                           "JOIN Users u ON st.UserID = u.UserID " +
-                           "WHERE u.Username = ?";
-            
+                           "WHERE m.USN = ?";
             PreparedStatement pstmt = connection.prepareStatement(query);
-            pstmt.setString(1, studentUsername);
+            pstmt.setString(1, studentUSN);
+
             ResultSet rs = pstmt.executeQuery();
 
-            StringBuilder marksList = new StringBuilder();
-            marksList.append("Subject\tMSE1\tMSE2\tTask\tSEE\tCIE\tSEE_50\tTotal\tGrade\n");
-            marksList.append("---------------------------------------------------------------------\n");
-
             while (rs.next()) {
-                String subjectName = rs.getString("SubjectName");
-                int mse1 = rs.getInt("MSE1");
-                int mse2 = rs.getInt("MSE2");
-                int task = rs.getInt("Task");
-                int see = rs.getInt("SEE");
-                int cie = rs.getInt("CIE");
-                int see_50 = rs.getInt("SEE_50");
-                int total = rs.getInt("Total");
-                String grade = rs.getString("Grade");
-
-                marksList.append(String.format("%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%s\n",
-                        subjectName, mse1, mse2, task, see, cie, see_50, total, grade));
+                tableModel.addRow(new Object[]{
+                    rs.getString("SubjectName"),
+                    rs.getInt("MSE1"),
+                    rs.getInt("MSE2"),
+                    rs.getInt("Task"),
+                    rs.getInt("SEE"),
+                    rs.getInt("CIE"),
+                    rs.getInt("SEE_50"),
+                    rs.getInt("Total"),
+                    rs.getString("Grade")
+                });
             }
-
-            if (marksList.length() == 0) {
-                marksTextArea.setText("No marks found for this student.");
-            } else {
-                marksTextArea.setText(marksList.toString());
-            }
-
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            StudentDashboard studentDashboard = new StudentDashboard("student1"); // Test with valid username
-            studentDashboard.setVisible(true);
-        });
     }
 }
