@@ -322,7 +322,6 @@
 //     }
 // }
 
-
 package UI;
 
 import Database.DatabaseConnection;
@@ -341,10 +340,14 @@ public class StudentDashboard extends JFrame {
     private DefaultTableModel tableModel;
     private Connection connection;
     private String studentUSN;
+    private String studentName;
 
     public StudentDashboard(String studentUSN) {
         this.studentUSN = studentUSN;
         connection = DatabaseConnection.getConnection();
+
+        // Retrieve student name
+        fetchStudentDetails();
 
         // Frame settings
         setTitle("Student Dashboard - USN: " + studentUSN);
@@ -384,9 +387,13 @@ public class StudentDashboard extends JFrame {
 
         // Layout settings
         JPanel panel = new JPanel(new BorderLayout(10, 10));
-        JLabel titleLabel = new JLabel("Student Marks", JLabel.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        panel.add(titleLabel, BorderLayout.NORTH);
+
+        // Display student name and USN
+        JLabel studentInfoLabel = new JLabel("Name: " + studentName + " | USN: " + studentUSN, JLabel.CENTER);
+        studentInfoLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        panel.add(studentInfoLabel, BorderLayout.NORTH);
+
+        // Add marks table
         panel.add(scrollPane, BorderLayout.CENTER);
 
         // Add back button
@@ -402,6 +409,25 @@ public class StudentDashboard extends JFrame {
         add(panel);
 
         setVisible(true);
+    }
+
+    private void fetchStudentDetails() {
+        try {
+            String query = "SELECT StudentName FROM Students WHERE USN = ?";
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.setString(1, studentUSN);
+
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                studentName = rs.getString("StudentName");
+            } else {
+                studentName = "Unknown";
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error fetching student details: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            studentName = "Unknown";
+        }
     }
 
     private void loadMarks() {
