@@ -337,10 +337,394 @@
 //     }
 // }
 
+// package UI;
+
+// import Database.DatabaseConnection;
+
+// import javax.swing.*;
+// import java.awt.*;
+// import java.awt.event.ActionEvent;
+// import java.awt.event.ActionListener;
+// import java.sql.Connection;
+// import java.sql.PreparedStatement;
+// import java.sql.ResultSet;
+// import java.sql.SQLException;
+
+// public class LoginForm extends JFrame {
+//     private JTextField usernameField;
+//     private JPasswordField passwordField;
+//     private JComboBox<String> roleComboBox;
+//     private Connection connection;
+
+//     public LoginForm() {
+//         connection = DatabaseConnection.getConnection();
+
+//         setTitle("Login Form");
+//         setSize(400, 300);
+//         setDefaultCloseOperation(EXIT_ON_CLOSE);
+//         setLocationRelativeTo(null);
+
+//         JPanel panel = new JPanel();
+//         panel.setLayout(new GridLayout(5, 2, 10, 10));
+
+//         JLabel usernameLabel = new JLabel("Username:");
+//         usernameField = new JTextField();
+
+//         JLabel passwordLabel = new JLabel("Password:");
+//         passwordField = new JPasswordField();
+
+//         JLabel roleLabel = new JLabel("Role:");
+//         roleComboBox = new JComboBox<>(new String[]{"Student", "Teacher"});
+
+//         JButton loginButton = new JButton("Login");
+//         JButton backButton = new JButton("Back");  // NEW: Back Button
+
+//         loginButton.addActionListener(new ActionListener() {
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
+//                 handleLogin();
+//             }
+//         });
+
+//         // Action Listener for Back Button
+//         backButton.addActionListener(new ActionListener() {
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
+//                 dispose();  // Close the current LoginForm
+//                 new InitialPage();  // Open the InitialPage
+//             }
+//         });
+
+//         panel.add(usernameLabel);
+//         panel.add(usernameField);
+//         panel.add(passwordLabel);
+//         panel.add(passwordField);
+//         panel.add(roleLabel);
+//         panel.add(roleComboBox);
+//         panel.add(loginButton);
+//         panel.add(backButton);  // Adding the Back Button to the panel
+
+//         add(panel);
+//         setVisible(true);
+//     }
+
+//     private void handleLogin() {
+//         String username = usernameField.getText();
+//         String password = new String(passwordField.getPassword());
+//         String role = (String) roleComboBox.getSelectedItem();
+
+//         try {
+//             if (role.equals("Student")) {
+//                 String query = "SELECT * FROM Users u JOIN Students s ON u.UserID = s.UserID WHERE u.Username = ? AND u.Password = ? AND u.Role = 'Student'";
+//                 PreparedStatement pstmt = connection.prepareStatement(query);
+//                 pstmt.setString(1, username);
+//                 pstmt.setString(2, password);
+//                 ResultSet rs = pstmt.executeQuery();
+
+//                 if (rs.next()) {
+//                     int studentID = rs.getInt("StudentID");
+//                     dispose();
+//                     new StudentDashboard(username).setVisible(true);
+//                 } else {
+//                     JOptionPane.showMessageDialog(this, "Invalid Student Credentials");
+//                 }
+
+//             } else if (role.equals("Teacher")) {
+//                 String query = "SELECT * FROM Users u JOIN Teachers t ON u.UserID = t.UserID WHERE u.Username = ? AND u.Password = ? AND u.Role = 'Teacher'";
+//                 PreparedStatement pstmt = connection.prepareStatement(query);
+//                 pstmt.setString(1, username);
+//                 pstmt.setString(2, password);
+//                 ResultSet rs = pstmt.executeQuery();
+
+//                 if (rs.next()) {
+//                     int teacherID = rs.getInt("TeacherID");
+//                     dispose();
+//                     new TeacherDashboard(teacherID).setVisible(true);
+//                 } else {
+//                     JOptionPane.showMessageDialog(this, "Invalid Teacher Credentials");
+//                 }
+//             }
+
+//         } catch (SQLException e) {
+//             e.printStackTrace();
+//         }
+//     }
+// }
+
+// package UI;
+
+// import Database.DatabaseConnection;
+
+// import javax.swing.*;
+// import java.awt.*;
+// import java.awt.event.ActionEvent;
+// import java.awt.event.ActionListener;
+// import java.sql.Connection;
+// import java.sql.PreparedStatement;
+// import java.sql.ResultSet;
+// import java.sql.SQLException;
+
+// public class LoginForm extends JFrame {
+//     private JTextField usernameField;
+//     private JPasswordField passwordField;
+//     private JComboBox<String> roleComboBox;
+//     private Connection connection;
+
+//     public LoginForm() {
+//         connection = DatabaseConnection.getConnection();
+
+//         setTitle("Login Form");
+//         setSize(400, 300);
+//         setDefaultCloseOperation(EXIT_ON_CLOSE);
+//         setLocationRelativeTo(null);
+
+//         JPanel panel = new JPanel();
+//         panel.setLayout(new GridLayout(5, 2, 10, 10));
+
+//         JLabel usernameLabel = new JLabel("Username:");
+//         usernameField = new JTextField();
+
+//         JLabel passwordLabel = new JLabel("Password:");
+//         passwordField = new JPasswordField();
+
+//         JLabel roleLabel = new JLabel("Role:");
+//         roleComboBox = new JComboBox<>(new String[]{"Student", "Teacher"});
+
+//         JButton loginButton = new JButton("Login");
+//         JButton backButton = new JButton("Back");  // NEW: Back Button
+
+//         loginButton.addActionListener(new ActionListener() {
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
+//                 handleLogin();
+//             }
+//         });
+
+//         // Action Listener for Back Button
+//         backButton.addActionListener(new ActionListener() {
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
+//                 dispose();  // Close the current LoginForm
+//                 new InitialPage();  // Open the InitialPage
+//             }
+//         });
+
+//         panel.add(usernameLabel);
+//         panel.add(usernameField);
+//         panel.add(passwordLabel);
+//         panel.add(passwordField);
+//         panel.add(roleLabel);
+//         panel.add(roleComboBox);
+//         panel.add(loginButton);
+//         panel.add(backButton);  // Adding the Back Button to the panel
+
+//         add(panel);
+//         setVisible(true);
+//     }
+
+//     private void handleLogin() {
+//         String username = usernameField.getText();
+//         String password = new String(passwordField.getPassword());
+//         String role = (String) roleComboBox.getSelectedItem();
+
+//         try {
+//             if (role.equals("Student")) {
+//                 String query = "SELECT * FROM Users u JOIN Students s ON u.UserID = s.UserID WHERE u.Username = ? AND u.Password = ? AND u.Role = 'Student'";
+//                 PreparedStatement pstmt = connection.prepareStatement(query);
+//                 pstmt.setString(1, username);
+//                 pstmt.setString(2, password);
+//                 ResultSet rs = pstmt.executeQuery();
+
+//                 if (rs.next()) {
+//                     int userID = rs.getInt("UserID");
+//                     int studentID = rs.getInt("StudentID");
+
+//                     // 🔥 Trigger login activity
+//                     PreparedStatement logStmt = connection.prepareStatement(
+//                         "UPDATE Users SET LoginFlag = ~LoginFlag WHERE UserID = ?");
+//                     logStmt.setInt(1, userID);
+//                     logStmt.executeUpdate();
+
+//                     dispose();
+//                     new StudentDashboard(username).setVisible(true);
+//                 } else {
+//                     JOptionPane.showMessageDialog(this, "Invalid Student Credentials");
+//                 }
+
+//             } else if (role.equals("Teacher")) {
+//                 String query = "SELECT * FROM Users u JOIN Teachers t ON u.UserID = t.UserID WHERE u.Username = ? AND u.Password = ? AND u.Role = 'Teacher'";
+//                 PreparedStatement pstmt = connection.prepareStatement(query);
+//                 pstmt.setString(1, username);
+//                 pstmt.setString(2, password);
+//                 ResultSet rs = pstmt.executeQuery();
+
+//                 if (rs.next()) {
+//                     int userID = rs.getInt("UserID");
+//                     int teacherID = rs.getInt("TeacherID");
+
+//                     // 🔥 Trigger login activity
+//                     PreparedStatement logStmt = connection.prepareStatement(
+//                         "UPDATE Users SET LoginFlag = ~LoginFlag WHERE UserID = ?");
+//                     logStmt.setInt(1, userID);
+//                     logStmt.executeUpdate();
+
+//                     dispose();
+//                     new TeacherDashboard(teacherID).setVisible(true);
+//                 } else {
+//                     JOptionPane.showMessageDialog(this, "Invalid Teacher Credentials");
+//                 }
+//             }
+
+//         } catch (SQLException e) {
+//             e.printStackTrace();
+//         }
+//     }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// package UI;
+
+// import Database.DatabaseConnection;
+
+// import javax.swing.*;
+// import java.awt.*;
+// import java.awt.event.ActionEvent;
+// import java.awt.event.ActionListener;
+// import java.sql.Connection;
+// import java.sql.PreparedStatement;
+// import java.sql.ResultSet;
+// import java.sql.SQLException;
+
+// public class LoginForm extends JFrame {
+//     private JTextField usernameField;
+//     private JPasswordField passwordField;
+//     private JComboBox<String> roleComboBox;
+//     private Connection connection;
+
+//     public LoginForm() {
+//         connection = DatabaseConnection.getConnection();
+
+//         setTitle("Login Form");
+//         setSize(400, 300);
+//         setDefaultCloseOperation(EXIT_ON_CLOSE);
+//         setLocationRelativeTo(null);
+
+//         JPanel panel = new JPanel();
+//         panel.setLayout(new GridLayout(5, 2, 10, 10));
+
+//         JLabel usernameLabel = new JLabel("Username:");
+//         usernameField = new JTextField();
+
+//         JLabel passwordLabel = new JLabel("Password:");
+//         passwordField = new JPasswordField();
+
+//         JLabel roleLabel = new JLabel("Role:");
+//         roleComboBox = new JComboBox<>(new String[]{"Student", "Teacher"});
+
+//         JButton loginButton = new JButton("Login");
+//         JButton backButton = new JButton("Back");
+
+//         loginButton.addActionListener(new ActionListener() {
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
+//                 handleLogin();
+//             }
+//         });
+
+//         backButton.addActionListener(new ActionListener() {
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
+//                 dispose();
+//                 new InitialPage();
+//             }
+//         });
+
+//         panel.add(usernameLabel);
+//         panel.add(usernameField);
+//         panel.add(passwordLabel);
+//         panel.add(passwordField);
+//         panel.add(roleLabel);
+//         panel.add(roleComboBox);
+//         panel.add(loginButton);
+//         panel.add(backButton);
+
+//         add(panel);
+//         setVisible(true);
+//     }
+
+//     private void handleLogin() {
+//         String username = usernameField.getText();
+//         String password = new String(passwordField.getPassword());
+//         String role = (String) roleComboBox.getSelectedItem();
+
+//         try {
+//             if (role.equals("Student")) {
+//                 String query = "SELECT * FROM Users u JOIN Students s ON u.UserID = s.UserID WHERE u.Username = ? AND u.Password = ? AND u.Role = 'Student'";
+//                 PreparedStatement pstmt = connection.prepareStatement(query);
+//                 pstmt.setString(1, username);
+//                 pstmt.setString(2, password);
+//                 ResultSet rs = pstmt.executeQuery();
+
+//                 if (rs.next()) {
+//                     int studentID = rs.getInt("StudentID");
+
+//                     // ✅ Update LoginFlag to trigger login activity
+//                     PreparedStatement flagStmt = connection.prepareStatement("UPDATE Users SET LoginFlag = 1 WHERE Username = ?");
+//                     flagStmt.setString(1, username);
+//                     flagStmt.executeUpdate();
+
+//                     dispose();
+//                     new StudentDashboard(username).setVisible(true);
+//                 } else {
+//                     JOptionPane.showMessageDialog(this, "Invalid Student Credentials");
+//                 }
+
+//             } else if (role.equals("Teacher")) {
+//                 String query = "SELECT * FROM Users u JOIN Teachers t ON u.UserID = t.UserID WHERE u.Username = ? AND u.Password = ? AND u.Role = 'Teacher'";
+//                 PreparedStatement pstmt = connection.prepareStatement(query);
+//                 pstmt.setString(1, username);
+//                 pstmt.setString(2, password);
+//                 ResultSet rs = pstmt.executeQuery();
+
+//                 if (rs.next()) {
+//                     int teacherID = rs.getInt("TeacherID");
+
+//                     // ✅ Update LoginFlag to trigger login activity
+//                     PreparedStatement flagStmt = connection.prepareStatement("UPDATE Users SET LoginFlag = 1 WHERE Username = ?");
+//                     flagStmt.setString(1, username);
+//                     flagStmt.executeUpdate();
+
+//                     dispose();
+//                     new TeacherDashboard(teacherID).setVisible(true);
+//                 } else {
+//                     JOptionPane.showMessageDialog(this, "Invalid Teacher Credentials");
+//                 }
+//             }
+
+//         } catch (SQLException e) {
+//             e.printStackTrace();
+//         }
+//     }
+// }
+
+
+
 package UI;
 
 import Database.DatabaseConnection;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -357,6 +741,7 @@ public class LoginForm extends JFrame {
     private Connection connection;
 
     public LoginForm() {
+        // Establish database connection
         connection = DatabaseConnection.getConnection();
 
         setTitle("Login Form");
@@ -377,8 +762,9 @@ public class LoginForm extends JFrame {
         roleComboBox = new JComboBox<>(new String[]{"Student", "Teacher"});
 
         JButton loginButton = new JButton("Login");
-        JButton backButton = new JButton("Back");  // NEW: Back Button
+        JButton backButton = new JButton("Back");
 
+        // Attach action listeners to buttons
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -386,15 +772,15 @@ public class LoginForm extends JFrame {
             }
         });
 
-        // Action Listener for Back Button
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose();  // Close the current LoginForm
-                new InitialPage();  // Open the InitialPage
+                dispose();
+                new InitialPage();
             }
         });
 
+        // Add components to the panel
         panel.add(usernameLabel);
         panel.add(usernameField);
         panel.add(passwordLabel);
@@ -402,12 +788,13 @@ public class LoginForm extends JFrame {
         panel.add(roleLabel);
         panel.add(roleComboBox);
         panel.add(loginButton);
-        panel.add(backButton);  // Adding the Back Button to the panel
+        panel.add(backButton);
 
         add(panel);
         setVisible(true);
     }
 
+    // Handles login functionality
     private void handleLogin() {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
@@ -415,7 +802,8 @@ public class LoginForm extends JFrame {
 
         try {
             if (role.equals("Student")) {
-                String query = "SELECT * FROM Users u JOIN Students s ON u.UserID = s.UserID WHERE u.Username = ? AND u.Password = ? AND u.Role = 'Student'";
+                String query = "SELECT * FROM Users u JOIN Students s ON u.UserID = s.UserID " +
+                               "WHERE u.Username = ? AND u.Password = ? AND u.Role = 'Student'";
                 PreparedStatement pstmt = connection.prepareStatement(query);
                 pstmt.setString(1, username);
                 pstmt.setString(2, password);
@@ -423,6 +811,17 @@ public class LoginForm extends JFrame {
 
                 if (rs.next()) {
                     int studentID = rs.getInt("StudentID");
+
+                    // Reset LoginFlag first to ensure a change is made
+                    PreparedStatement resetStmt = connection.prepareStatement("UPDATE Users SET LoginFlag = 0 WHERE Username = ?");
+                    resetStmt.setString(1, username);
+                    resetStmt.executeUpdate();
+
+                    // Update LoginFlag to 1 to log the login activity via trigger
+                    PreparedStatement flagStmt = connection.prepareStatement("UPDATE Users SET LoginFlag = 1 WHERE Username = ?");
+                    flagStmt.setString(1, username);
+                    flagStmt.executeUpdate();
+
                     dispose();
                     new StudentDashboard(username).setVisible(true);
                 } else {
@@ -430,7 +829,8 @@ public class LoginForm extends JFrame {
                 }
 
             } else if (role.equals("Teacher")) {
-                String query = "SELECT * FROM Users u JOIN Teachers t ON u.UserID = t.UserID WHERE u.Username = ? AND u.Password = ? AND u.Role = 'Teacher'";
+                String query = "SELECT * FROM Users u JOIN Teachers t ON u.UserID = t.UserID " +
+                               "WHERE u.Username = ? AND u.Password = ? AND u.Role = 'Teacher'";
                 PreparedStatement pstmt = connection.prepareStatement(query);
                 pstmt.setString(1, username);
                 pstmt.setString(2, password);
@@ -438,13 +838,23 @@ public class LoginForm extends JFrame {
 
                 if (rs.next()) {
                     int teacherID = rs.getInt("TeacherID");
+
+                    // Reset LoginFlag first to ensure a change is made
+                    PreparedStatement resetStmt = connection.prepareStatement("UPDATE Users SET LoginFlag = 0 WHERE Username = ?");
+                    resetStmt.setString(1, username);
+                    resetStmt.executeUpdate();
+
+                    // Update LoginFlag to 1 to log the login activity via trigger
+                    PreparedStatement flagStmt = connection.prepareStatement("UPDATE Users SET LoginFlag = 1 WHERE Username = ?");
+                    flagStmt.setString(1, username);
+                    flagStmt.executeUpdate();
+
                     dispose();
                     new TeacherDashboard(teacherID).setVisible(true);
                 } else {
                     JOptionPane.showMessageDialog(this, "Invalid Teacher Credentials");
                 }
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
