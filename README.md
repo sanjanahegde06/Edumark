@@ -68,20 +68,6 @@
 
 ---
 
-## 🖥️ Setup Instructions
-
-1. Clone this repository  
-2. Import and execute all SQL files from the `/sql` folder into MS SQL Server  
-3. Update your database credentials in `DatabaseConnection.java`  
-4. Compile and run `LoginForm.java` to launch the application
-
----
-
-## 📸 Screenshots (Optional)
-
-_Add UI screenshots of login page, student and teacher dashboards, etc._
-
----
 
 ## 👨‍💻 Developed By
 
